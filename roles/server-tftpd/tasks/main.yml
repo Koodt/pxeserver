@@ -66,6 +66,20 @@
     state: started
   when: portcheck.stdout == ""
 
+- name: Create configs
+  template: src=preseed_{{ item[0] }}{{ item[1] }}.j2 dest=/srv/ftp/anonymous/isos/preseed/{{ item[0] }}/preseed_{{ item[0] }}{{ item[1] }}
+  with_nested:
+    - [ "astra15", "astra16" ]
+    - [ "_LVM.cfg", ".cfg" ]
+
+- name: Change preseeds permissions
+  file:
+    path: "/srv/ftp/anonymous/isos/preseed/{{ item }}/"
+    mode: '664'
+  with_items:
+    - astra15
+    - astra16
+
 - name: Restarting TFTPD service if running and config changed
   service:
     name: tftpd-hpa
@@ -73,23 +87,3 @@
   when: (tftpdconf.changed and
         portcheck.stdout != "") or
         pxelinuxconf.changed
-
-- name: Create NON LVM 
-  template: src=preseed_{{ item }}.cfg.j2 dest=/srv/ftp/anonymous/isos/preseed/{{ item }}/preseed_{{ item }}.cfg
-  with_items:
-    - astra15
-    - astra16
-
-- name: Create LVM
-  template: src=preseed_{{ item }}_LVM.cfg.j2 dest=/srv/ftp/anonymous/isos/preseed/{{ item }}/preseed_{{ item }}_LVM.cfg
-  with_items:
-    - astra15
-    - astra16
-
-- name: Change preseeds permissions
-  file:
-    path: "{{ item }}"
-    mode: '664'
-  with_items:
-    - /srv/ftp/anonymous/isos/preseed/astra15/preseed.cfg
-    - /srv/ftp/anonymous/isos/preseed/astra16/preseed.cfg
