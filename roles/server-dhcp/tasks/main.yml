@@ -1,0 +1,26 @@
+- name: Install DHCP server
+  package:
+    name: fly-admin-dhcp
+    state: present
+
+- name: Create DHCP config
+  template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf backup=yes
+  register: dhcpdconf
+
+- name: Check DHCP PID exist
+  stat:
+    path: /var/run/dhcpd.pid
+  register: dhcpdpid
+
+- name: Starting DHCP service if not running
+  service:
+    name: isc-dhcp-server
+    state: started
+  when: dhcpdpid.stat.exists == False
+
+- name: Restarting DHCP service if running and config changed
+  service:
+    name: isc-dhcp-server
+    state: restarted
+  when: dhcpdconf.changed and
+        dhcpdpid.stat.exists == True

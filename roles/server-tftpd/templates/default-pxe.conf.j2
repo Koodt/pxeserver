@@ -1,0 +1,74 @@
+ui vesamenu.c32
+PROMPT 0
+MENU WIDTH 77
+MENU MARGIN 10
+MENU PASSWORDMARGIN 3
+MENU ROWS 12
+MENU TABMSGROW 18
+MENU CMDLINEROW 18
+MENU ENDROW 24
+MENU PASSWORDROW 11
+MENU TIMEOUTROW 60
+MENU AUTOBOOT Starting Local System in # seconds
+
+MENU PASSPROMPT Enter Password
+
+NOESCAPE 0
+ALLOWOPTIONS 0
+
+MENU COLOR SCREEN 44;30 #00FFFFFF #00000000
+MENU COLOR BORDER 44;30 #FFFFFFFF #FF000000
+MENU COLOR TITLE 1;44;30 #FFFFFFFF #FF000000
+
+MENU COLOR SCROLLBAR 44;30
+
+MENU COLOR HOTKEY 44;30 #FFFFFF00 #FF000000
+MENU COLOR UNSEL 44;30 #FFFFFFFF #FF000000
+MENU COLOR HOTSEL 1;30 #FFFFFFFF #FF333333
+MENU COLOR SEL 7;44;30 #FFFFFF00 #FF333333
+
+MENU COLOR CMDMARK 44;30
+MENU COLOR CMDLINE 44;30
+MENU COLOR TABMSG 44;30
+MENU COLOR DISABLED 44;30
+MENU COLOR HELP 44;30
+
+MENU COLOR PWDBORDER 44;30 #FF187CCA #FFFFFFFF
+MENU COLOR PWDHEADER 1;44;30 #FF187CCA #FFFFFFFF
+MENU COLOR PWDENTRY 5;44;30 #FF187CCA #FFFFFFFF
+MENU BACKGROUND pxelinux.cfg/background.png
+
+LABEL AL15SE_preseed
+	menu label ^LOCAL ASTRA 1.5 SE PRESEED
+	kernel images/astra15/linux
+	append initrd=images/astra15/initrd.gz vga=788 auto=true priority=critical debian-installer/locale=en_US console-keymaps-at/keymap=ru hostname=test2 domain=my.dom astra-license/license=true url=ftp://10.11.12.13/isos/preseed/astra15/preseed_astra15.cfg interface=auto netcfg/dhcp_timeout=60
+  TEXT HELP
+	Astra Linux SE 1.5 preseed install
+  ENDTEXT
+
+LABEL AL15SE_preseed
+        menu label ^LOCAL ASTRA 1.5 SE PRESEED LVM
+        kernel images/astra15/linux
+        append initrd=images/astra15/initrd.gz vga=788 auto=true priority=critical debian-installer/locale=en_US console-keymaps-at/keymap=ru hostname=test2 domain=my.dom astra-license/license=true url=ftp://10.11.12.13/isos/preseed/astra15/preseed_astra15_LVM.cfg interface=auto netcfg/dhcp_timeout=60
+  TEXT HELP
+        Astra Linux SE 1.5 preseed install
+  ENDTEXT
+
+LABEL AL15SE_non_preseed
+        menu label ^LOCAL ASTRA 1.5 SE WITHOUT PRESEED
+        kernel linux
+        append initrd=initrd.gz vga=788 auto=true priority=critical debian-installer/locale=en_US console-keymaps-at/keymap=ru hostname=test2 domain=my.dom astra-license/license=true interface=auto netcfg/dhcp_timeout=60
+  TEXT HELP
+        Astra Linux SE 1.5 without preseed install
+  ENDTEXT
+
+LABEL AL16SE_preseed
+        menu label ^LOCAL ASTRA 1.6 SE PRESEED
+        kernel images/astra16/linux
+        append initrd=images/astra16/initrd.gz vga=788 auto=true priority=critical debian-installer/locale=en_US console-keymaps-at/keymap=ru hostname=test2 domain=my.dom astra-license/license=true url=ftp://10.11.12.13/isos/preseed/astra16/preseed_astra16.cfg interface=auto netcfg/dhcp_timeout=60
+  TEXT HELP
+        Astra Linux SE 1.6 preseed install
+  ENDTEXT
+
+
+TIMEOUT 50

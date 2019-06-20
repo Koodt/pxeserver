@@ -1,0 +1,8 @@
+- include_role:
+    name: server-dhcp
+
+- include_role:
+    name: server-vsftpd
+
+- include_role:
+    name: server-tftpd

@@ -1,0 +1,45 @@
+- name: Install VSFTPD server
+  package:
+    name: vsftpd
+    state: present
+ 
+- name: Create VSFTPD config
+  template: src=vsftpd.conf.j2 dest=/etc/vsftpd.conf
+  register: vsftpdconf
+
+- name: Change /srv/ftp/ ownership and permissions
+  file:
+    path: /srv/ftp/
+    owner: ftp
+    mode: '555'
+
+- name: Create /srv/ftp/anonymous directory if it does not exist
+  file:
+    path: /srv/ftp/anonymous
+    state: directory
+    mode: '555'
+
+- name: Create /srv/ftp/anonymous/Inbox directory if it does not exist
+  file:
+    path: /srv/ftp/anonymous/Inbox
+    state: directory
+    mode: '777'
+
+- name: Check VSFTPD service status
+  stat:
+    path: /var/run/vsftpd/vsftpd.pid
+  register: vsftpdpid
+
+- name: Starting VSFTPD service if not running
+  service:
+    name: vsftpd
+    state: started
+  when: vsftpdpid.stat.exists == False 
+
+- name: Restarting VSFTPD service if running and config changed
+  service:
+    name: vsftpd
+    state: restarted
+  when: vsftpdconf.changed and
+        vsftpdpid.stat.exists == True
+
