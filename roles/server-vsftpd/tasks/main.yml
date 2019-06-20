@@ -2,28 +2,21 @@
   package:
     name: vsftpd
     state: present
- 
+
 - name: Create VSFTPD config
   template: src=vsftpd.conf.j2 dest=/etc/vsftpd.conf
   register: vsftpdconf
 
-- name: Change /srv/ftp/ ownership and permissions
+- name: Create VSFTPD directories
   file:
-    path: /srv/ftp/
+    path: "{{ item.directory }}"
+    state: directory
     owner: ftp
-    mode: '555'
-
-- name: Create /srv/ftp/anonymous directory if it does not exist
-  file:
-    path: /srv/ftp/anonymous
-    state: directory
-    mode: '555'
-
-- name: Create /srv/ftp/anonymous/Inbox directory if it does not exist
-  file:
-    path: /srv/ftp/anonymous/Inbox
-    state: directory
-    mode: '777'
+    mode: "{{ item.mode }}"
+  with_items:
+    - { directory: "/srv/ftp/", mode: "555"}
+    - { directory: "/srv/ftp/anonymous", mode: "555"}
+    - { directory: "/srv/ftp/anonymous/Inbox", mode: "777"}
 
 - name: Check VSFTPD service status
   stat:
@@ -34,7 +27,7 @@
   service:
     name: vsftpd
     state: started
-  when: vsftpdpid.stat.exists == False 
+  when: vsftpdpid.stat.exists == False
 
 - name: Restarting VSFTPD service if running and config changed
   service:
@@ -42,4 +35,3 @@
     state: restarted
   when: vsftpdconf.changed and
         vsftpdpid.stat.exists == True
-
